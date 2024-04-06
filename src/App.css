@@ -69,7 +69,7 @@
 }
 .guestOptionItem span,
 .guestOptionItem button {
-  display: inline-block;
+  display: flex;
 }
 .guestOptionItem .optionCounterBtn {
   padding: 0.5rem;
@@ -113,6 +113,9 @@
   color: #fff;
   padding: 0.6rem;
   border-radius: 1rem;
+}
+#optionDropDown {
+  cursor: pointer;
 }
 
 /*  location list */
