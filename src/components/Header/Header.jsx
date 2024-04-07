@@ -9,7 +9,7 @@ import { format } from "date-fns";
 
 function Header() {
   const [destination, setDestination] = useState("");
-  const [openOption, setOpenoption] = useState(false);
+  const [openOption, setOpenOption] = useState(false);
   const [options, setOptions] = useState({
     adult: 1,
     children: 0,
@@ -74,13 +74,13 @@ function Header() {
             <span className="seperator"></span>
           </div>
           <div className="headerSearchItem">
-            <div id="optionDropDown" onClick={() => setOpenoption(!openOption)}>
-              {options.adult} adult &bull; {options.children} chilren &bull;{" "}
+            <div id="optionDropDown" onClick={() => setOpenOption(!openOption)}>
+              {options.adult} adult &bull; {options.children} chilren &bull;
               {options.room} room
             </div>
             {openOption && (
               <GuestOptionList
-                setOpenoption={setOpenoption}
+                setOpenOption={setOpenOption}
                 handleOptions={handleOptions}
                 options={options}
               />
@@ -100,9 +100,9 @@ function Header() {
 
 export default Header;
 
-function GuestOptionList({ options, handleOptions, setOpenoption }) {
+function GuestOptionList({ options, handleOptions, setOpenOption }) {
   const optionsRef = useRef();
-  useOutsideClick(optionsRef, "optionDropDown", () => setOpenoption(false));
+  useOutsideClick(optionsRef, "optionDropDown", () => setOpenOption(false));
 
   return (
     <>
