@@ -9,7 +9,6 @@ import { format } from "date-fns";
 import { createSearchParams, useNavigate } from "react-router-dom";
 
 function Header() {
-  useOutsideClick(dateRef, "dateDropDown", () => setOpenDate(false));
   const [destination, setDestination] = useState("");
   const [openOption, setOpenOption] = useState(false);
   const [options, setOptions] = useState({
@@ -26,6 +25,7 @@ function Header() {
   ]);
   const [openDate, setOpenDate] = useState(false);
   const dateRef = useRef();
+  useOutsideClick(dateRef, "dateDropDown", () => setOpenDate(false));
   const navigate = useNavigate();
   // const [searchParams, setSearchParams] = useSearchParams();
 
