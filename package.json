@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "server": "json-server server/db.json --port 5000 ",
     "build": "vite build",
-    "server": "json-server --watch server/db.json --port 5000 ",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
