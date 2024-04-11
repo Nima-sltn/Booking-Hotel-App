@@ -15,7 +15,7 @@ import {
 function Header() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [destination, setDestination] = useState(
-    searchParams.get("destination" || "")
+    searchParams.get("destination") || ""
   );
   const [openOption, setOpenOption] = useState(false);
   const [options, setOptions] = useState({
