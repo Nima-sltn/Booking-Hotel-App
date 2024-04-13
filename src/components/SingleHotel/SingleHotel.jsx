@@ -1,12 +1,18 @@
 import { useParams } from "react-router-dom";
 import useFetch from "./../../hooks/useFetch";
 import Loader from "../Loader/Loader";
+import { useHotels } from "../context/HotelsProvider";
+import { useEffect } from "react";
 
 function SingleHotel() {
   const { id } = useParams();
-  const { data, isLoading } = useFetch(`http://localhost:5000/hotels/${id}`);
+  const { currentHotel: data, getHotel, isLoadingCurrHotel } = useHotels();
 
-  if (isLoading) return <Loader />;
+  useEffect(() => {
+    getHotel(id);
+  }, [id]);
+
+  if (isLoadingCurrHotel) return <Loader />;
 
   return (
     <>
