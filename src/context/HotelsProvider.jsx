@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import useFetch from "../../hooks/useFetch";
+import useFetch from "../hooks/useFetch";
 import axios from "axios";
 import toast from "react-hot-toast";
 

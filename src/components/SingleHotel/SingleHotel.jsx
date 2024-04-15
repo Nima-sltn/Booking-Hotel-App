@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import useFetch from "./../../hooks/useFetch";
 import Loader from "../Loader/Loader";
-import { useHotels } from "../context/HotelsProvider";
+import { useHotels } from "../../context/HotelsProvider";
 import { useEffect } from "react";
 
 function SingleHotel() {
