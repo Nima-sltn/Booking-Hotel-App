@@ -43,3 +43,7 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+
+a:active {
+  color: var(--primary-700);
+}
