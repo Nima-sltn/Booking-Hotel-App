@@ -1334,31 +1334,13 @@
       "id": 4
     },
     {
-      "cityName": "Shiraz",
-      "country": "Iran (Islamic Republic of)",
-      "countryCode": "IR",
-      "latitude": "35.29226721011167",
-      "longitude": "46.6585922241211",
-      "host_location": "Shiraz Iran (Islamic Republic of)",
-      "id": 5
-    },
-    {
-      "cityName": "A Dakhla Oasis",
-      "country": "Egypt",
-      "countryCode": "EG",
-      "latitude": "25.02090651422749",
-      "longitude": "29.09059588509316",
-      "host_location": "A Dakhla Oasis Egypt",
-      "id": 7
-    },
-    {
-      "cityName": "Baba Kot",
-      "country": "Pakistan",
-      "countryCode": "PK",
-      "latitude": "28.43528783183169",
-      "longitude": "67.78003711374224",
-      "host_location": "Baba Kot Pakistan",
-      "id": 8
+      "cityName": "Luxembourg",
+      "country": "Luxembourg",
+      "countryCode": "LU",
+      "latitude": "49.607601570157684",
+      "longitude": "6.174316406250001",
+      "host_location": "Luxembourg Luxembourg",
+      "id": 11
     }
   ]
 }

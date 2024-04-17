@@ -2,9 +2,16 @@ import ReactCountryFlag from "react-country-flag";
 import { useBookmark } from "../../context/BookmarkListContext";
 import Loader from "./../Loader/Loader";
 import { Link } from "react-router-dom";
+import { HiTrash } from "react-icons/hi";
 
 function Bookmark() {
-  const { isLoading, bookmarks, currentBookmark } = useBookmark();
+  const { isLoading, deleteBookmark, bookmarks, currentBookmark } =
+    useBookmark();
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    await deleteBookmark(id);
+  };
 
   if (isLoading) return <Loader />;
 
@@ -21,9 +28,14 @@ function Bookmark() {
                 className={`bookmarkItem ${
                   item.id === currentBookmark?.id ? "current-bookmark" : ""
                 }`}>
-                <ReactCountryFlag svg countryCode={item.countryCode} />
-                &nbsp; <strong>{item.cityName}</strong> &nbsp;{" "}
-                <span>{item.country}</span>
+                <div>
+                  <ReactCountryFlag svg countryCode={item.countryCode} />
+                  &nbsp; <strong>{item.cityName}</strong> &nbsp;{" "}
+                  <span>{item.country}</span>
+                </div>
+                <button onClick={(e) => handleDelete(e, item.id)}>
+                  <HiTrash className="trash" />
+                </button>
               </div>
             </Link>
           );
