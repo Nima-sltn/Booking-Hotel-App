@@ -1359,6 +1359,42 @@
       "longitude": "67.78003711374224",
       "host_location": "Baba Kot Pakistan",
       "id": 8
+    },
+    {
+      "cityName": "London",
+      "country": "United Kingdom of Great Britain and Northern Ireland (the)",
+      "countryCode": "GB",
+      "latitude": "51.38913965725327",
+      "longitude": "0",
+      "host_location": "London United Kingdom of Great Britain and Northern Ireland (the)",
+      "id": 9
+    },
+    {
+      "cityName": "Nurlu",
+      "country": "France",
+      "countryCode": "FR",
+      "latitude": "50.00924539273882",
+      "longitude": "3.002872467041016",
+      "host_location": "Nurlu France",
+      "id": 10
+    },
+    {
+      "cityName": "Luxembourg",
+      "country": "Luxembourg",
+      "countryCode": "LU",
+      "latitude": "49.607601570157684",
+      "longitude": "6.174316406250001",
+      "host_location": "Luxembourg Luxembourg",
+      "id": 11
+    },
+    {
+      "cityName": "Karezat",
+      "country": "Pakistan",
+      "countryCode": "PK",
+      "latitude": "30.49355129423322",
+      "longitude": "67.02758789062501",
+      "host_location": "Karezat Pakistan",
+      "id": 12
     }
   ]
 }
