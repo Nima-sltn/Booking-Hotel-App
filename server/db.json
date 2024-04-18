@@ -1325,22 +1325,22 @@
   ],
   "bookmarks": [
     {
-      "cityName": "Mahidasht",
+      "cityName": "Shiraz",
       "country": "Iran (Islamic Republic of)",
       "countryCode": "IR",
-      "latitude": "34.32869425037187",
-      "longitude": "46.724183117022086",
-      "host_location": "Mahidasht Iran (Islamic Republic of)",
-      "id": 4
+      "latitude": "29.582051043999932",
+      "longitude": "52.53662109375001",
+      "host_location": "Shiraz Iran (Islamic Republic of)",
+      "id": 1
     },
     {
-      "cityName": "Luxembourg",
-      "country": "Luxembourg",
-      "countryCode": "LU",
-      "latitude": "49.607601570157684",
-      "longitude": "6.174316406250001",
-      "host_location": "Luxembourg Luxembourg",
-      "id": 11
+      "cityName": "Moislains",
+      "country": "France",
+      "countryCode": "FR",
+      "latitude": "50.011122024557395",
+      "longitude": "2.9786682128906254",
+      "host_location": "Moislains France",
+      "id": 3
     }
   ]
 }
