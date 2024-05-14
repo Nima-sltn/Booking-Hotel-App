@@ -1,4 +1,4 @@
-# Hotel Booking SPA Project 😎
+# Hotel Booking SPA Project 
 
 ## Description 📝
 
@@ -12,7 +12,8 @@ To Provide a Beautiful User Interface, a Local Database is Used to Manage and Or
 This is an Application Developed with the React.js Library,
 On the other hand, This Project is Set up with Vite.
 
-I am currently working on optimizing the app codes 
+I am currently working on optimizing the app codes 😎
+
 ## Getting Started 🚀
 
 To get started with this project, follow these steps:
