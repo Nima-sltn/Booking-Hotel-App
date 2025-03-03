@@ -117,16 +117,20 @@ function BookmarkListProvider({ children }) {
     }
   }
 
+  const bookmarkContextValue = useMemo(
+    () => ({
+      isLoading,
+      bookmarks,
+      currentBookmark,
+      getBookmark,
+      deleteBookmark,
+      createBookmark,
+    }),
+    [isLoading, bookmarks, currentBookmark]
+  );
+
   return (
-    <BookmarkContext.Provider
-      value={{
-        isLoading,
-        bookmarks,
-        currentBookmark,
-        getBookmark,
-        deleteBookmark,
-        createBookmark,
-      }}>
+    <BookmarkContext.Provider value={bookmarkContextValue}>
       {children}
     </BookmarkContext.Provider>
   );

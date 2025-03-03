@@ -7,11 +7,11 @@ import {
   useMap,
   useMapEvent,
 } from "react-leaflet";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useGeoLocation from "../../hooks/useGeoLocation";
 import useUrlLocation from "../../hooks/useUrlLocation";
 
-function Map({ markerLocations }) {
+function CustomMap({ markerLocations }) {
   const [mapCenter, setMapCenter] = useState([50, 3]);
   const [lat, lng] = useUrlLocation();
 
@@ -31,34 +31,32 @@ function Map({ markerLocations }) {
   }, [geoLocationPosition]);
 
   return (
-    <>
-      <div className="mapContainer">
-        <MapContainer
-          className="map"
-          center={mapCenter}
-          zoom={13}
-          scrollWheelZoom={true}>
-          <button onClick={getPosition} className="getLocation">
-            {isLoadingPosition ? "Loading ..." : "Use Your Location"}
-          </button>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-          />
-          <DetectClick />
-          <ChangeCenter position={mapCenter} />
-          {markerLocations.map((item) => (
-            <Marker key={item.id} position={[item.latitude, item.longitude]}>
-              <Popup>{item.host_location}</Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
-    </>
+    <div className="mapContainer">
+      <MapContainer
+        className="map"
+        center={mapCenter}
+        zoom={13}
+        scrollWheelZoom={true}>
+        <button onClick={getPosition} className="getLocation">
+          {isLoadingPosition ? "Loading ..." : "Use Your Location"}
+        </button>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+        />
+        <DetectClick />
+        <ChangeCenter position={mapCenter} />
+        {markerLocations.map((item) => (
+          <Marker key={item.id} position={[item.latitude, item.longitude]}>
+            <Popup>{item.host_location}</Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 }
 
-export default Map;
+export default CustomMap;
 
 function ChangeCenter({ position }) {
   const map = useMap();

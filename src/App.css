@@ -253,7 +253,6 @@
   display: flex;
   justify-content: space-between;
   height: calc(100vh - 130px);
-  /* background-color: var(--text-100); */
   align-items: stretch;
 }
 

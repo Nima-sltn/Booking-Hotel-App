@@ -10,7 +10,7 @@ const BASE_URL = "http://localhost:5000/hotels";
 function HotelsProvider({ children }) {
   const [currentHotel, setCurrentHotel] = useState({});
   const [isLoadingCurrHotel, setIsLoadingCurrHotel] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const destination = searchParams.get("destination");
   const room = JSON.parse(searchParams.get("options"))?.room;
   const { isLoading, data: hotels } = useFetch(
@@ -30,9 +30,19 @@ function HotelsProvider({ children }) {
     }
   }
 
+  const hotelContextValue = useMemo(
+    () => ({
+      isLoading,
+      hotels,
+      currentHotel,
+      getHotel,
+      isLoadingCurrHotel,
+    }),
+    [isLoading, hotels, currentHotel, isLoadingCurrHotel]
+  );
+
   return (
-    <HotelContext.Provider
-      value={{ isLoading, hotels, currentHotel, getHotel, isLoadingCurrHotel }}>
+    <HotelContext.Provider value={hotelContextValue}>
       {children}
     </HotelContext.Provider>
   );
