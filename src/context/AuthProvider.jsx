@@ -45,8 +45,13 @@ export default function AuthProvider({ children }) {
     dispatch({ type: "logout" });
   }
 
+  const authContextValue = useMemo(
+    () => ({ user, isAuthenticated, Login, Logout }),
+    [user, isAuthenticated]
+  );
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, Login, Logout }}>
+    <AuthContext.Provider value={authContextValue}>
       {children}
     </AuthContext.Provider>
   );
