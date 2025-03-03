@@ -5,7 +5,9 @@ import { useHotels } from "../../context/HotelsProvider";
 function Hotels() {
   const { isLoading, hotels, currentHotel } = useHotels();
 
-  isLoading && <Loader />;
+  {
+    isLoading && <Loader />;
+  }
 
   return (
     <div className="searchList">
