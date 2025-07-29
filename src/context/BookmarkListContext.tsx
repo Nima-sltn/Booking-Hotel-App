@@ -4,21 +4,51 @@ import {
   useEffect,
   useReducer,
   useMemo,
+  ReactNode,
 } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { Bookmark } from "../types";
 
-const BookmarkContext = createContext();
+interface BookmarkState {
+  bookmarks: Bookmark[];
+  isLoading: boolean;
+  currentBookmark: Bookmark | null;
+  error: string | null;
+}
+
+interface BookmarkContextType {
+  isLoading: boolean;
+  bookmarks: Bookmark[];
+  currentBookmark: Bookmark | null;
+  getBookmark: (id: string) => Promise<void>;
+  deleteBookmark: (id: string) => Promise<void>;
+  createBookmark: (newBookmark: Omit<Bookmark, 'id'>) => Promise<void>;
+}
+
+interface BookmarkListProviderProps {
+  children: ReactNode;
+}
+
+type BookmarkAction = 
+  | { type: "loading" }
+  | { type: "bookmarks/loaded"; payload: Bookmark[] }
+  | { type: "bookmark/loaded"; payload: Bookmark }
+  | { type: "bookmark/created"; payload: Bookmark }
+  | { type: "bookmark/deleted"; payload: string }
+  | { type: "rejected"; payload: string };
+
+const BookmarkContext = createContext<BookmarkContextType | undefined>(undefined);
 const BASE_URL = "http://localhost:5000";
 
-const initialState = {
+const initialState: BookmarkState = {
   bookmarks: [],
   isLoading: false,
   currentBookmark: null,
   error: null,
 };
 
-function bookmarkReducer(state, action) {
+function bookmarkReducer(state: BookmarkState, action: BookmarkAction): BookmarkState {
   switch (action.type) {
     case "loading":
       return {
@@ -62,7 +92,7 @@ function bookmarkReducer(state, action) {
   }
 }
 
-function BookmarkListProvider({ children }) {
+function BookmarkListProvider({ children }: BookmarkListProviderProps) {
   const [{ bookmarks, isLoading, currentBookmark }, dispatch] = useReducer(
     bookmarkReducer,
     initialState
@@ -74,7 +104,7 @@ function BookmarkListProvider({ children }) {
       try {
         const { data } = await axios.get(`${BASE_URL}/bookmarks`);
         dispatch({ type: "bookmarks/loaded", payload: data });
-      } catch (error) {
+      } catch (error: any) {
         toast.error(error.message);
         dispatch({
           type: "rejected",
@@ -85,14 +115,14 @@ function BookmarkListProvider({ children }) {
     fetchBookmarkList();
   }, []);
 
-  async function getBookmark(id) {
+  async function getBookmark(id: string): Promise<void> {
     if (Number(id) === currentBookmark?.id) return;
 
     dispatch({ type: "loading" });
     try {
       const { data } = await axios.get(`${BASE_URL}/bookmarks/${id}`);
       dispatch({ type: "bookmark/loaded", payload: data });
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.message);
       dispatch({
         type: "rejected",
@@ -101,23 +131,23 @@ function BookmarkListProvider({ children }) {
     }
   }
 
-  async function createBookmark(newBookmark) {
+  async function createBookmark(newBookmark: Omit<Bookmark, 'id'>): Promise<void> {
     dispatch({ type: "loading" });
     try {
       const { data } = await axios.post(`${BASE_URL}/bookmarks/`, newBookmark);
       dispatch({ type: "bookmark/created", payload: data });
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.message);
       dispatch({ type: "rejected", payload: error.message });
     }
   }
 
-  async function deleteBookmark(id) {
+  async function deleteBookmark(id: string): Promise<void> {
     dispatch({ type: "loading" });
     try {
       await axios.delete(`${BASE_URL}/bookmarks/${id}`);
       dispatch({ type: "bookmark/deleted", payload: id });
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.message);
       dispatch({ type: "rejected", payload: error.message });
     }
@@ -132,7 +162,7 @@ function BookmarkListProvider({ children }) {
       deleteBookmark,
       createBookmark,
     }),
-    [isLoading, bookmarks, currentBookmark]
+    [isLoading, bookmarks, currentBookmark, getBookmark]
   );
 
   return (
@@ -143,6 +173,10 @@ function BookmarkListProvider({ children }) {
 }
 export default BookmarkListProvider;
 
-export function useBookmark() {
-  return useContext(BookmarkContext);
+export function useBookmark(): BookmarkContextType {
+  const context = useContext(BookmarkContext);
+  if (context === undefined) {
+    throw new Error("useBookmark must be used within a BookmarkListProvider");
+  }
+  return context;
 }
