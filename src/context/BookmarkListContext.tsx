@@ -116,7 +116,7 @@ function BookmarkListProvider({ children }: BookmarkListProviderProps) {
   }, []);
 
   async function getBookmark(id: string): Promise<void> {
-    if (Number(id) === currentBookmark?.id) return;
+    if (id === currentBookmark?.id) return;
 
     dispatch({ type: "loading" });
     try {

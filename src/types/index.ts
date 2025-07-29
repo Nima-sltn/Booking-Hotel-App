@@ -17,6 +17,8 @@ export interface Hotel {
   };
   price: number;
   smart_location: string;
+  number_of_reviews?: number;
+  xl_picture_url?: string;
 }
 
 export interface Bookmark {

@@ -3,14 +3,14 @@ import { Position } from "../types";
 
 interface UseGeoLocationResult {
   isLoading: boolean;
-  position: Position | {};
+  position: Position | null;
   error: string | null;
   getPosition: () => void;
 }
 
 export default function useGeoLocation(): UseGeoLocationResult {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [position, setPosition] = useState<Position | {}>({});
+  const [position, setPosition] = useState<Position | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   function getPosition() {

@@ -10,9 +10,19 @@ import {
 import { useNavigate } from "react-router-dom";
 import useGeoLocation from "../../hooks/useGeoLocation";
 import useUrlLocation from "../../hooks/useUrlLocation";
+import { Hotel, Bookmark } from "../../types";
+import { LeafletMouseEvent } from "leaflet";
 
-function CustomMap({ markerLocations }) {
-  const [mapCenter, setMapCenter] = useState([50, 3]);
+interface CustomMapProps {
+  markerLocations: Hotel[] | Bookmark[];
+}
+
+interface ChangeCenterProps {
+  position: [number, number];
+}
+
+function CustomMap({ markerLocations }: CustomMapProps) {
+  const [mapCenter, setMapCenter] = useState<[number, number]>([50, 3]);
   const [lat, lng] = useUrlLocation();
 
   const {
@@ -22,12 +32,13 @@ function CustomMap({ markerLocations }) {
   } = useGeoLocation();
 
   useEffect(() => {
-    if (lat && lng) setMapCenter([lat, lng]);
+    if (lat && lng) setMapCenter([Number(lat), Number(lng)]);
   }, [lat, lng]);
 
   useEffect(() => {
-    if (geoLocationPosition?.lat && geoLocationPosition?.lng)
+    if (geoLocationPosition && 'lat' in geoLocationPosition && 'lng' in geoLocationPosition) {
       setMapCenter([geoLocationPosition.lat, geoLocationPosition.lng]);
+    }
   }, [geoLocationPosition]);
 
   return (
@@ -48,7 +59,7 @@ function CustomMap({ markerLocations }) {
         <ChangeCenter position={mapCenter} />
         {markerLocations.map((item) => (
           <Marker key={item.id} position={[item.latitude, item.longitude]}>
-            <Popup>{item.host_location}</Popup>
+            <Popup>{('host_location' in item) ? item.host_location : (item as Bookmark).cityName}</Popup>
           </Marker>
         ))}
       </MapContainer>
@@ -58,7 +69,7 @@ function CustomMap({ markerLocations }) {
 
 export default CustomMap;
 
-function ChangeCenter({ position }) {
+function ChangeCenter({ position }: ChangeCenterProps) {
   const map = useMap();
   map.setView(position);
   return null;
@@ -66,9 +77,8 @@ function ChangeCenter({ position }) {
 
 function DetectClick() {
   const navigate = useNavigate();
-  useMapEvent({
-    click: (e) =>
-      navigate(`/bookmark/add?lat=${e.latlng.lat}&lng=${e.latlng.lng}`),
-  });
+  useMapEvent('click', (e: LeafletMouseEvent) =>
+    navigate(`/bookmark/add?lat=${e.latlng.lat}&lng=${e.latlng.lng}`)
+  );
   return null;
 }

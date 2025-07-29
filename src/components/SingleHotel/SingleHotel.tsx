@@ -4,14 +4,16 @@ import { useHotels } from "../../context/HotelsProvider";
 import { useEffect } from "react";
 
 function SingleHotel() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { currentHotel: data, getHotel, isLoadingCurrHotel } = useHotels();
 
   useEffect(() => {
-    getHotel(id);
-  }, [id]);
+    if (id) getHotel(id);
+  }, [id, getHotel]);
 
   if (isLoadingCurrHotel) return <Loader />;
+
+  if (!data) return <div>Hotel not found</div>;
 
   return (
     <div className="room">

@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 
 function Login() {
-  const [email, setEmail] = useState("nima@gmail.com");
-  const [password, setPassword] = useState("1234");
+  const [email, setEmail] = useState<string>("nima@gmail.com");
+  const [password, setPassword] = useState<string>("1234");
   const { Login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (email && password) Login(email, password);
   };

@@ -4,7 +4,7 @@ import { MdLocationOn, MdLogout } from "react-icons/md";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { DateRange } from "react-date-range";
+import { DateRange, RangeKeyDict } from "react-date-range";
 import { format } from "date-fns";
 import {
   NavLink,
@@ -14,30 +14,55 @@ import {
 } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 
+interface Options {
+  adult: number;
+  children: number;
+  room: number;
+}
+
+interface DateSelection {
+  startDate: Date;
+  endDate: Date;
+  key: string;
+}
+
+interface GuestOptionListProps {
+  options: Options;
+  handleOptions: (name: keyof Options, operation: 'inc' | 'dec') => void;
+  setOpenOption: (open: boolean) => void;
+}
+
+interface OptionItemProps {
+  type: keyof Options;
+  options: Options;
+  minLimit: number;
+  handleOptions: (name: keyof Options, operation: 'inc' | 'dec') => void;
+}
+
 function Header() {
   const [searchParams] = useSearchParams();
-  const [destination, setDestination] = useState(
+  const [destination, setDestination] = useState<string>(
     searchParams.get("destination") || ""
   );
-  const [openOption, setOpenOption] = useState(false);
-  const [options, setOptions] = useState({
+  const [openOption, setOpenOption] = useState<boolean>(false);
+  const [options, setOptions] = useState<Options>({
     adult: 1,
     children: 0,
     room: 1,
   });
-  const [date, setDate] = useState([
+  const [date, setDate] = useState<DateSelection[]>([
     {
       startDate: new Date(),
       endDate: new Date(),
       key: "selection",
     },
   ]);
-  const [openDate, setOpenDate] = useState(false);
-  const dateRef = useRef();
+  const [openDate, setOpenDate] = useState<boolean>(false);
+  const dateRef = useRef<HTMLDivElement>(null);
   useOutsideClick(dateRef, "dateDropDown", () => setOpenDate(false));
   const navigate = useNavigate();
 
-  const handleOptions = (name, operation) => {
+  const handleOptions = (name: keyof Options, operation: 'inc' | 'dec') => {
     setOptions((prev) => {
       return {
         ...prev,
@@ -45,6 +70,7 @@ function Header() {
       };
     });
   };
+  
   const handleSearch = () => {
     const encodedParams = createSearchParams({
       date: JSON.stringify(date),
@@ -88,7 +114,7 @@ function Header() {
           {openDate && (
             <DateRange
               className="date"
-              onChange={(item) => setDate([item.selection])}
+              onChange={(item: RangeKeyDict) => setDate([item.selection as DateSelection])}
               ranges={date}
               minDate={new Date()}
               moveRangeOnFirstSelection={true}
@@ -125,8 +151,8 @@ function Header() {
 
 export default Header;
 
-function GuestOptionList({ options, handleOptions, setOpenOption }) {
-  const optionsRef = useRef();
+function GuestOptionList({ options, handleOptions, setOpenOption }: GuestOptionListProps) {
+  const optionsRef = useRef<HTMLDivElement>(null);
   useOutsideClick(optionsRef, "optionDropDown", () => setOpenOption(false));
 
   return (
@@ -153,7 +179,7 @@ function GuestOptionList({ options, handleOptions, setOpenOption }) {
   );
 }
 
-function OptionItem({ type, options, minLimit, handleOptions }) {
+function OptionItem({ type, options, minLimit, handleOptions }: OptionItemProps) {
   return (
     <div className="guestOptionItem">
       <span className="optionText">{type}</span>
@@ -187,7 +213,7 @@ function User() {
     <div>
       {isAuthenticated ? (
         <div className="logoutContainer">
-          <strong>{user.name}</strong>
+          <strong>{user!.name}</strong>
           <button>
             &nbsp;
             <MdLogout onClick={handleLogout} className="logout icon" />

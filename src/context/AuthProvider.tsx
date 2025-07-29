@@ -28,7 +28,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
 };
 
-function authReducer(state: AuthState, action: AuthAction): AuthState {
+function authReducer(_state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case "login":
       return {

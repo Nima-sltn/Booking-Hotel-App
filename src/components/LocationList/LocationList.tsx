@@ -1,8 +1,9 @@
 import useFetch from "../../hooks/useFetch";
 import Loader from "../Loader/Loader";
+import { Hotel } from "../../types";
 
 function LocationList() {
-  const { data, isLoading } = useFetch("http://localhost:5000/hotels", "");
+  const { data, isLoading } = useFetch<Hotel>("http://localhost:5000/hotels", "");
 
   if (isLoading) return <Loader />;
 
@@ -10,7 +11,7 @@ function LocationList() {
     <div className="nearbyLocation">
       <h2>Nearby Locations</h2>
       <div className="locationList">
-        {data.map((item) => {
+        {data.map((item: Hotel) => {
           return (
             <div className="locationItem" key={item.id}>
               <img src={item.picture_url.url} alt={item.name} />

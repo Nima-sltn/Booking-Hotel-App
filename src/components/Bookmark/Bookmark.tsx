@@ -3,12 +3,13 @@ import { useBookmark } from "../../context/BookmarkListContext";
 import Loader from "./../Loader/Loader";
 import { Link } from "react-router-dom";
 import { HiTrash } from "react-icons/hi";
+import { MouseEvent } from "react";
 
 function Bookmark() {
   const { isLoading, deleteBookmark, bookmarks, currentBookmark } =
     useBookmark();
 
-  const handleDelete = async (e, id) => {
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
     await deleteBookmark(id);
   };

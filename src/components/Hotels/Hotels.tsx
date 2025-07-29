@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Loader from "../Loader/Loader";
 import { useHotels } from "../../context/HotelsProvider";
+import { Hotel } from "../../types";
 
 function Hotels() {
   const { isLoading, hotels, currentHotel } = useHotels();
@@ -10,7 +11,7 @@ function Hotels() {
   return (
     <div className="searchList">
       <h2>Search Results ({hotels.length})</h2>
-      {hotels.map((item) => {
+      {hotels.map((item: Hotel) => {
         return (
           <Link
             key={item.id}

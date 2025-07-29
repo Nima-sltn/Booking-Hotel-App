@@ -8,7 +8,7 @@ import { Hotel } from "../types";
 interface HotelContextType {
   isLoading: boolean;
   hotels: Hotel[];
-  currentHotel: Hotel | {};
+  currentHotel: Hotel | null;
   getHotel: (id: string) => Promise<void>;
   isLoadingCurrHotel: boolean;
 }
@@ -21,7 +21,7 @@ const HotelContext = createContext<HotelContextType | undefined>(undefined);
 const BASE_URL = "http://localhost:5000/hotels";
 
 function HotelsProvider({ children }: HotelsProviderProps) {
-  const [currentHotel, setCurrentHotel] = useState<Hotel | {}>({});
+  const [currentHotel, setCurrentHotel] = useState<Hotel | null>(null);
   const [isLoadingCurrHotel, setIsLoadingCurrHotel] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const destination = searchParams.get("destination");
