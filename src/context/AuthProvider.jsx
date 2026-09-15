@@ -1,4 +1,11 @@
-import { createContext, useContext, useMemo, useReducer } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+} from "react";
+import PropTypes from "prop-types";
 
 const AuthContext = createContext();
 
@@ -14,11 +21,13 @@ function authReducer(state, action) {
         user: action.payload,
         isAuthenticated: true,
       };
+
     case "logout":
       return {
         user: null,
         isAuthenticated: false,
       };
+
     default:
       throw new Error("unknown action!");
   }
@@ -33,21 +42,30 @@ const FAKE_USER = {
 export default function AuthProvider({ children }) {
   const [{ user, isAuthenticated }, dispatch] = useReducer(
     authReducer,
-    initialState
+    initialState,
   );
 
-  function Login(email, password) {
-    if (email === FAKE_USER.email && password === FAKE_USER.password)
-      dispatch({ type: "login", payload: FAKE_USER });
-  }
+  const Login = useCallback((email, password) => {
+    if (email === FAKE_USER.email && password === FAKE_USER.password) {
+      dispatch({
+        type: "login",
+        payload: FAKE_USER,
+      });
+    }
+  }, []);
 
-  function Logout() {
+  const Logout = useCallback(() => {
     dispatch({ type: "logout" });
-  }
+  }, []);
 
   const authContextValue = useMemo(
-    () => ({ user, isAuthenticated, Login, Logout }),
-    [user, isAuthenticated]
+    () => ({
+      user,
+      isAuthenticated,
+      Login,
+      Logout,
+    }),
+    [user, isAuthenticated, Login, Logout],
   );
 
   return (
@@ -56,6 +74,10 @@ export default function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export function useAuth() {
   return useContext(AuthContext);
