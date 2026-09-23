@@ -1,105 +1,159 @@
-# Hotel Booking SPA Project 
+# StayFinder — Hotel Booking SPA 🏨
 
-## Description 📝
+A single-page hotel & home booking app built with **React + Vite + Tailwind CSS 4**.
+Search stays, explore them side by side on an interactive map, bookmark the
+destinations you love — with **live weather**, **multi-currency prices** and a
+persisted **light/dark theme**.
 
-The Hotel Booking Single Page Application (SPA) is A hotel Reservation Site that Allows you to Find the Desired Hotel Based on your needs and Conditions from the Main List of Hotels or the Filtered List or add the Desired Hotel from the Map to the Bookmark List;
+---
 
-Also, Each User can have his Own List of Bookmarks and Hotels and Manage his Own List of Bookmarks. (Delete, Edit or Add a Bookmark.)
+## ✨ Features
 
-In This Project, For the Create of Different Routes (Pages), React Router DOM is used, Which Naturally Creates a Much Better User Experience, on the Other Hand
-To Provide a Beautiful User Interface, a Local Database is Used to Manage and Organize the Information of Hotels and Bookmarks.
+### Core
+- **Search** by destination, date range and guest/room counts — query state lives
+  in the URL, so every search is shareable and bookmarkable.
+- **Split layout**: scrollable results list + full-screen Leaflet map.
+- **Hotel detail** with cover art, rating, facts, amenities, host card and price.
+- **Bookmarks**: click any point on the map to save a destination
+  (reverse-geocoded automatically), then list / open / delete them.
+- **Auth**: demo login, protected routes, and redirect-back to the page you
+  originally requested. Session survives refresh (localStorage).
+- **404 page** and a top-level **error boundary** (no white screens).
 
-This is an Application Developed with the React.js Library,
-On the other hand, This Project is Set up with Vite.
+### Cross-domain integrations (all free, keyless APIs)
+- **🌤 Weather** — Open-Meteo forecast for every hotel and bookmark coordinate
+  (current conditions + 3-day outlook with WMO weather-code icons).
+- **💱 Currency conversion** — live exchange rates (open.er-api.com); switch
+  EUR → USD/GBP/JPY/CAD/CHF and every price in the app re-renders.
+- **📍 Reverse geocoding** — OpenStreetMap Nominatim turns a map click into
+  city/country/country-code for the bookmark form.
 
-I am currently working on optimizing the app codes 😎
+### UI/UX
+- Full **Tailwind CSS 4** design system (cards, buttons, forms, panels) with a
+  consistent indigo/slate/rose palette.
+- **Dark mode** engine (light/dark, persisted, respects `color-scheme`), including
+  dark map tiles and a dark calendar.
+- **Skeleton loaders**, empty states, hover/active micro-interactions,
+  sticky glass header, responsive from mobile to wide desktop.
+- **Sort control** (recommended / price ↑↓ / top rated) with highlighted
+  current selection.
+- Local **generated cover art** for the demo dataset — no external image CDN,
+  plus an `onError` gradient fallback for any broken image.
 
-## Getting Started 🚀
+---
 
-To get started with this project, follow these steps:
-
-1. Clone this repository to your local machine:
+## 🚀 Quick start
 
 ```bash
-https://github.com/Nima-sltn/Booking-Hotel-App.git
-
-```
-
-2. Open the project folder in your code editor.
-
-3. Explore the src folder and check App.jsx file to understand the project structure and styling.
-
-4. In this step, Install the Project Dependencies :
-
-```bash
+# 1. install dependencies
 npm install
-```
 
-5. Don't Forget to Start the JSON Server to Create the Local Database, Use the Following Command to Do So :
-
-```bash
+# 2. terminal A — local REST API (json-server on :5000)
 npm run server
+
+# 3. terminal B — dev server (Vite on :5173)
+npm run dev
 ```
 
-6. Note that in order to apply Development Server, be sure to enter the following command in the terminal editor:
+Open http://localhost:5173
+
+**Demo credentials:** `nima@gmail.com` / `1234`
+
+> The API base URL defaults to `http://localhost:5000` and can be overridden
+> without code changes: `VITE_API_URL=https://my-api.example.com npm run dev`
+
+---
+
+## 📜 Scripts
+
+| Script          | What it does                                   |
+| --------------- | ---------------------------------------------- |
+| `npm run dev`   | Start Vite dev server                          |
+| `npm run server`| Start json-server REST API on port 5000        |
+| `npm run build` | Production build (vendor-split chunks)         |
+| `npm run lint`  | ESLint with `--max-warnings 0` (must be clean) |
+| `npm run preview` | Serve the production build                   |
+
+---
+
+## 🗂 Project structure
+
+```
+src/
+├── components/            # UI, one folder per component
+│   ├── Header/            # sticky header: search, currency, theme, auth
+│   ├── LocationList/      # home: hero + stay cards
+│   ├── Hotels/            # search results + sorting
+│   ├── SingleHotel/       # hotel detail + weather + save action
+│   ├── Bookmark(Layout)/  # bookmark list & split layout
+│   ├── SingleBookmark/    # bookmark detail + weather
+│   ├── AddNewBookmark/    # reverse-geocoded form
+│   ├── WeatherWidget/     # cross-domain: Open-Meteo card
+│   ├── Price/             # cross-domain: FX-aware price
+│   ├── CurrencySwitcher/  # cross-domain: currency select
+│   ├── ThemeToggle/       # light/dark switch
+│   ├── Map/               # Leaflet wrapper (click-to-bookmark)
+│   ├── ErrorBoundary/     # top-level crash recovery
+│   ├── NotFound/          # 404
+│   ├── Loader/ EmptyState/ ProtectedRoute/ Login/
+├── config/env.js          # every external URL + storage keys in one place
+├── context/               # state: Theme, Auth, Hotels, Bookmarks, Currency
+│   ├── *Context.js        # component-free context + hook (fast-refresh safe)
+│   └── *Provider.jsx      # provider component
+├── hooks/                 # useFetch (abortable), useGeoLocation,
+│                          # useOutsideClick, useUrlLocation
+├── routes/AppRoutes.jsx   # central route table (incl. 404 catch-all)
+├── services/              # all HTTP calls, one module per domain
+│   ├── http.js            # axios instance + error normalization
+│   ├── hotelService.js  bookmarkService.js
+│   ├── weatherService.js  currencyService.js  geocodingService.js
+└── utils/                 # imageFallback, ...
+```
+
+---
+
+## 🏗 Architecture at a glance
+
+```
+components  ──►  context (state)  ──►  services (HTTP)  ──►  http (axios)  ──►  APIs
+     │                                                            │
+     └── hooks (useFetch/useGeoLocation/...)   config/env (URLs) ◄─┘
+```
+
+- **Layers**: UI never calls `axios` directly — it goes through `services/`,
+  so endpoints and query shapes exist in exactly one place.
+- **State**: five focused contexts (theme, auth, hotels, bookmarks, currency),
+  reducers where it pays off, `useCallback`/`useMemo` for stable values.
+- **URL as state**: search params and map coordinates live in the URL —
+  shareable, back/forward-friendly.
+- **Resilience**: abortable fetching (no stale-response races), axios error
+  normalization, toast notifications, FX fallback to EUR, image fallback to a
+  local gradient, stale-hotel guard in the detail view.
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full walkthrough and
+[docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) for the external APIs.
+
+---
+
+## 🛠 Tech stack
+
+React 18 · Vite 6 · Tailwind CSS 4 · React Router 6 · Context API +
+useReducer · Axios · React Leaflet · react-date-range · date-fns ·
+react-hot-toast · React Icons · json-server (dev API)
+
+---
+
+## ✅ Quality gates
 
 ```bash
- npm run dev
+npm run lint    # ESLint, 0 errors / 0 warnings
+npm run build   # production build, vendor-split, no size warnings
 ```
 
-## Usage 📋
+## 🗺 Ideas for the next iteration
 
-- Customize the project to match your specific requirements.
-- Add your own content and styles.
-- Test the responsiveness on various devices and browsers.
-
-## Features ✅
-
-- Hotel Reservation through Main List,Filtered List and Hotel Details Section,as well as Desired Hotel Filter by Entering Information such as Name of Destination,Length of Stay and Determining the Number of People (Adults and Children) and Rooms.
-- Creating a Map Using the React Leaflet Package.
-- Ability to View all Filtered Hotels and Desired Hotel on Map.
-- Ability to Create Bookmarks and View all Bookmarks (and Desired Bookmarks) by Map.
-- Management of bookmarks (You can Delete or Edit the Desired Bookmark.)
-- Display Last Bookmark and Hotel Visited by User on List of Bookmarks and Hotels.
-- Ability to Display User's Location by Map.
-- Ability to Register and Authenticate by User through Registration and Login Forms.
-- Each User can have a List of Reserved Hotels and Bookmarks.
-- Bringing JSON Server Local Database Online by Deploying it on Rendering Site.
-- Creating Protected Route in Project.
-- Creating a Calendar using Date Range Package.
-- Managing Errors on Server Side and Displaying them on Client Side.
-- Ability to Redirect User to Desired Page after Authentication.
-
-## Packages 📦
-
-- React Leaflet (React Components for Leaflet Maps)
-- React Country Flag (React Component for emoji/svg Country Flags)
-- React Date Range (React Component for Choosing Dates and Date Ranges)
-- Date fns (Toolset for Manipulating JavaScript Dates in a Browser)
-- RRD (React Router DOM)
-- JSON Server (To Build a Local Database)
-- Axios (For All Server Side Requests)
-- React-Hot-Toast (To Display Server Side Errors and Loader)
-- HeroIcons/React
-- React-Icons
-
-## Tips 📌
-
-- Using the React Router DOM Hooks, Nested and Dynamic Routes and Also Using Routes File for Optimal Management of Built Routes.
-- Combination of Hooks Context and useReducer is used to Management States.
-- Creating Global Dynamic Components.
-- Using the Concepts and Principles of Clean Code.
-- Using the Concepts Component Lifecycle.
-- Using the Concepts and Principles React Hooks and Custom Hooks.
-- Using the Concepts Local Storage. (To Store and Retrieve Data from the Browser Storage)
-- Created API Request Functions and Base URL.
-
-## Web Development Technologies 🪄
-
-- HTML5 (Semantic HTML)
-- Flexbox and Grid Layout Systems
-- React.js
-- RRD (React Router DOM)
-- JSON Server
-- Vite
-- NPM
+- Real backend (Node/Postgres) + JWT auth
+- Optimistic bookmark updates & request-level unit tests
+- Currency auto-detection from `navigator.language`
+- Offline-first PWA shell & image lazy-loading placeholders
+- Clustering for large marker sets, keyboard shortcuts in search

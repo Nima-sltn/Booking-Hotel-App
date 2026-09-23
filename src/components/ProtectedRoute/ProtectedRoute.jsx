@@ -1,16 +1,29 @@
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../../context/AuthProvider";
-import { useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
+/**
+ * Route guard: renders children only when authenticated, otherwise
+ * redirects to /login while remembering the originally requested page
+ * (Login sends the user back after a successful sign-in).
+ *
+ * @param {{ children: import("react").ReactNode }} props
+ */
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
-  return isAuthenticated ? children : null;
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return (
+      <Navigate to="/login" replace state={{ from: location }} />
+    );
+  }
+
+  return children;
 }
-ProtectedRoute.propTypes = { children: PropTypes.node.isRequired };
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 export default ProtectedRoute;

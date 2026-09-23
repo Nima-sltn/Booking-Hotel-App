@@ -1,21 +1,12 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useMemo,
-} from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { toast } from "react-hot-toast";
-
-const BookmarkContext = createContext();
-
-const BASE_URL = "http://localhost:5000";
+import { BookmarkContext } from "./BookmarkContext";
+import * as bookmarkService from "../services/bookmarkService";
 
 const initialState = {
   bookmarks: [],
-  isLoading: false,
+  isLoading: true,
   currentBookmark: null,
   error: null,
 };
@@ -23,25 +14,11 @@ const initialState = {
 function bookmarkReducer(state, action) {
   switch (action.type) {
     case "loading":
-      return {
-        ...state,
-        isLoading: true,
-      };
-
+      return { ...state, isLoading: true, error: null };
     case "bookmarks/loaded":
-      return {
-        ...state,
-        isLoading: false,
-        bookmarks: action.payload,
-      };
-
+      return { ...state, isLoading: false, bookmarks: action.payload };
     case "bookmark/loaded":
-      return {
-        ...state,
-        isLoading: false,
-        currentBookmark: action.payload,
-      };
-
+      return { ...state, isLoading: false, currentBookmark: action.payload };
     case "bookmark/created":
       return {
         ...state,
@@ -49,7 +26,6 @@ function bookmarkReducer(state, action) {
         bookmarks: [...state.bookmarks, action.payload],
         currentBookmark: action.payload,
       };
-
     case "bookmark/deleted":
       return {
         ...state,
@@ -57,112 +33,80 @@ function bookmarkReducer(state, action) {
         bookmarks: state.bookmarks.filter((item) => item.id !== action.payload),
         currentBookmark: null,
       };
-
     case "rejected":
-      return {
-        ...state,
-        isLoading: false,
-        error: action.payload,
-      };
-
+      return { ...state, isLoading: false, error: action.payload };
     default:
-      throw new Error("unknown action");
+      throw new Error(`Unknown bookmark action: ${action.type}`);
   }
 }
 
-function BookmarkListProvider({ children }) {
+/**
+ * Owns bookmark state and all CRUD operations (JSON Server `/bookmarks`).
+ * @param {{ children: import("react").ReactNode }} props
+ */
+export default function BookmarkListProvider({ children }) {
   const [{ bookmarks, isLoading, currentBookmark }, dispatch] = useReducer(
     bookmarkReducer,
     initialState,
   );
 
   useEffect(() => {
-    async function fetchBookmarkList() {
+    let cancelled = false;
+    (async () => {
       dispatch({ type: "loading" });
-
       try {
-        const { data } = await axios.get(`${BASE_URL}/bookmarks`);
-
-        dispatch({
-          type: "bookmarks/loaded",
-          payload: data,
-        });
+        const data = await bookmarkService.getBookmarks();
+        if (!cancelled) dispatch({ type: "bookmarks/loaded", payload: data });
       } catch (error) {
+        if (cancelled) return;
         toast.error(error.message);
-
         dispatch({
           type: "rejected",
-          payload: "an Error occurred in loading bookmarks",
+          payload: "An error occurred while loading bookmarks",
         });
       }
-    }
-
-    fetchBookmarkList();
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  async function getBookmark(id) {
-    if (Number(id) === currentBookmark?.id) return;
-
+  const getBookmark = useCallback(async (id) => {
     dispatch({ type: "loading" });
-
     try {
-      const { data } = await axios.get(`${BASE_URL}/bookmarks/${id}`);
-
-      dispatch({
-        type: "bookmark/loaded",
-        payload: data,
-      });
+      const bookmark = await bookmarkService.getBookmarkById(id);
+      dispatch({ type: "bookmark/loaded", payload: bookmark });
     } catch (error) {
       toast.error(error.message);
-
-      dispatch({
-        type: "rejected",
-        payload: "an Error occurred in loading single bookmark",
-      });
+      dispatch({ type: "rejected", payload: error.message });
     }
-  }
+  }, []);
 
-  async function createBookmark(newBookmark) {
+  const createBookmark = useCallback(async (newBookmark) => {
     dispatch({ type: "loading" });
-
     try {
-      const { data } = await axios.post(`${BASE_URL}/bookmarks`, newBookmark);
-
-      dispatch({
-        type: "bookmark/created",
-        payload: data,
-      });
+      const created = await bookmarkService.createBookmark(newBookmark);
+      dispatch({ type: "bookmark/created", payload: created });
+      return created;
     } catch (error) {
       toast.error(error.message);
-
-      dispatch({
-        type: "rejected",
-        payload: error.message,
-      });
+      dispatch({ type: "rejected", payload: error.message });
+      return null;
     }
-  }
+  }, []);
 
-  async function deleteBookmark(id) {
+  const deleteBookmark = useCallback(async (id) => {
     dispatch({ type: "loading" });
-
     try {
-      await axios.delete(`${BASE_URL}/bookmarks/${id}`);
-
-      dispatch({
-        type: "bookmark/deleted",
-        payload: id,
-      });
+      await bookmarkService.deleteBookmark(id);
+      dispatch({ type: "bookmark/deleted", payload: id });
     } catch (error) {
       toast.error(error.message);
-
-      dispatch({
-        type: "rejected",
-        payload: error.message,
-      });
+      dispatch({ type: "rejected", payload: error.message });
     }
-  }
+  }, []);
 
-  const bookmarkContextValue = useMemo(
+  const value = useMemo(
     () => ({
       isLoading,
       bookmarks,
@@ -171,11 +115,18 @@ function BookmarkListProvider({ children }) {
       deleteBookmark,
       createBookmark,
     }),
-    [isLoading, bookmarks, currentBookmark],
+    [
+      isLoading,
+      bookmarks,
+      currentBookmark,
+      getBookmark,
+      deleteBookmark,
+      createBookmark,
+    ],
   );
 
   return (
-    <BookmarkContext.Provider value={bookmarkContextValue}>
+    <BookmarkContext.Provider value={value}>
       {children}
     </BookmarkContext.Provider>
   );
@@ -184,9 +135,3 @@ function BookmarkListProvider({ children }) {
 BookmarkListProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
-
-export default BookmarkListProvider;
-
-export function useBookmark() {
-  return useContext(BookmarkContext);
-}

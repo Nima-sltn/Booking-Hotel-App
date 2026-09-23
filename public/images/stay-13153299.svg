@@ -1,0 +1,9 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='900' height='600' viewBox='0 0 900 600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#f59e0b'/><stop offset='1' stop-color='#f43f5e'/></linearGradient></defs>
+<rect width='900' height='600' fill='url(#g)'/>
+<circle cx='770' cy='90' r='230' fill='rgba(255,255,255,0.14)'/>
+<circle cx='130' cy='180' r='110' fill='rgba(255,255,255,0.10)'/>
+<rect x='0' y='519' width='61' height='81' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='69' y='549' width='73' height='51' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='150' y='471' width='49' height='129' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='207' y='554' width='62' height='46' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='277' y='543' width='67' height='57' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='352' y='495' width='48' height='105' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='408' y='541' width='58' height='59' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='474' y='478' width='45' height='122' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='527' y='482' width='53' height='118' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='588' y='554' width='64' height='46' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='660' y='536' width='70' height='64' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='738' y='508' width='30' height='92' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='776' y='555' width='48' height='45' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='832' y='460' width='63' height='140' rx='5' fill='rgba(0,0,0,0.16)'/>
+<text x='60' y='300' font-family='Inter, Arial, sans-serif' font-size='25' font-weight='800' fill='rgba(255,255,255,0.96)'>Trendy and spacious rooftop apt (115m2) in centre</text>
+<text x='62' y='345' font-family='Inter, Arial, sans-serif' font-size='23' font-weight='500' fill='rgba(255,255,255,0.78)'>Amsterdam, Netherlands</text>
+</svg>

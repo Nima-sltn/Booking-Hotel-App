@@ -1,67 +1,71 @@
-import { createContext, useContext, useState, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
-import useFetch from "../hooks/useFetch";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { HotelContext } from "./HotelsContext";
+import useFetch from "../hooks/useFetch";
+import { API_BASE_URL } from "../config/env";
+import { getHotelById } from "../services/hotelService";
 
-const HotelContext = createContext();
-
-const BASE_URL = "http://localhost:5000/hotels";
-
-function HotelsProvider({ children }) {
-  const [currentHotel, setCurrentHotel] = useState({});
+/**
+ * Hotel search state: list filtered by URL search params + the currently
+ * opened hotel detail. Query state lives in the URL so searches are
+ * shareable/bookmarkable.
+ * @param {{ children: import("react").ReactNode }} props
+ */
+export default function HotelsProvider({ children }) {
+  const [currentHotel, setCurrentHotel] = useState(null);
   const [isLoadingCurrHotel, setIsLoadingCurrHotel] = useState(false);
-
   const [searchParams] = useSearchParams();
 
-  const destination = searchParams.get("destination");
+  const destination = searchParams.get("destination") ?? "";
+  let room = 1;
+  try {
+    room = JSON.parse(searchParams.get("options"))?.room ?? 1;
+  } catch {
+    /* malformed params -> fall back to 1 room */
+  }
 
-  const room = JSON.parse(searchParams.get("options"))?.room;
+  const query = `q=${encodeURIComponent(destination)}&accommodates_gte=${room}`;
 
-  const { isLoading, data: hotels } = useFetch(
-    BASE_URL,
-    `q=${destination || ""}&accommodates_gte=${room || 1}`,
+  const { isLoading, data: hotels, error } = useFetch(
+    `${API_BASE_URL}/hotels`,
+    query,
   );
 
-  async function getHotel(id) {
+  /** Load a single hotel detail by id. */
+  const getHotel = useCallback(async (id) => {
     setIsLoadingCurrHotel(true);
-
     try {
-      const { data } = await axios.get(`${BASE_URL}/${id}`);
-
-      setCurrentHotel(data);
-    } catch (error) {
-      toast.error(error.message);
+      const hotel = await getHotelById(id);
+      setCurrentHotel(hotel);
+      return hotel;
+    } catch (err) {
+      toast.error(err.message);
+      setCurrentHotel(null);
+      return null;
     } finally {
       setIsLoadingCurrHotel(false);
     }
-  }
+  }, []);
 
-  const hotelContextValue = useMemo(
+  const value = useMemo(
     () => ({
       isLoading,
-      hotels,
+      error,
+      hotels: hotels ?? [],
       currentHotel,
       getHotel,
       isLoadingCurrHotel,
     }),
-    [isLoading, hotels, currentHotel, isLoadingCurrHotel],
+    [isLoading, error, hotels, currentHotel, getHotel, isLoadingCurrHotel],
   );
 
   return (
-    <HotelContext.Provider value={hotelContextValue}>
-      {children}
-    </HotelContext.Provider>
+    <HotelContext.Provider value={value}>{children}</HotelContext.Provider>
   );
 }
 
 HotelsProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
-
-export default HotelsProvider;
-
-export function useHotels() {
-  return useContext(HotelContext);
-}
