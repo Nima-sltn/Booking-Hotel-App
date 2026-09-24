@@ -1,0 +1,9 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='900' height='600' viewBox='0 0 900 600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#10b981'/><stop offset='1' stop-color='#0d9488'/></linearGradient></defs>
+<rect width='900' height='600' fill='url(#g)'/>
+<circle cx='770' cy='90' r='230' fill='rgba(255,255,255,0.14)'/>
+<circle cx='130' cy='180' r='110' fill='rgba(255,255,255,0.10)'/>
+<rect x='0' y='492' width='62' height='108' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='70' y='542' width='44' height='58' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='122' y='497' width='48' height='103' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='178' y='478' width='68' height='122' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='254' y='524' width='27' height='76' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='289' y='545' width='68' height='55' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='365' y='526' width='69' height='74' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='442' y='556' width='42' height='44' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='492' y='557' width='46' height='43' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='546' y='490' width='32' height='110' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='586' y='492' width='56' height='108' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='650' y='497' width='44' height='103' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='702' y='552' width='69' height='48' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='779' y='514' width='38' height='86' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='825' y='548' width='31' height='52' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='864' y='457' width='53' height='143' rx='5' fill='rgba(0,0,0,0.16)'/>
+<text x='60' y='300' font-family='Inter, Arial, sans-serif' font-size='44' font-weight='800' fill='rgba(255,255,255,0.96)'>AMSTERDAM, OUD-WEST</text>
+<text x='62' y='345' font-family='Inter, Arial, sans-serif' font-size='23' font-weight='500' fill='rgba(255,255,255,0.78)'>Amsterdam, Netherlands</text>
+</svg>

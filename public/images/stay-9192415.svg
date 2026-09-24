@@ -1,0 +1,9 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='900' height='600' viewBox='0 0 900 600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#f43f5e'/><stop offset='1' stop-color='#f97316'/></linearGradient></defs>
+<rect width='900' height='600' fill='url(#g)'/>
+<circle cx='770' cy='90' r='230' fill='rgba(255,255,255,0.14)'/>
+<circle cx='130' cy='180' r='110' fill='rgba(255,255,255,0.10)'/>
+<rect x='0' y='513' width='49' height='87' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='57' y='558' width='61' height='42' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='126' y='464' width='26' height='136' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='160' y='459' width='29' height='141' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='197' y='553' width='64' height='47' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='269' y='456' width='53' height='144' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='330' y='516' width='46' height='84' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='384' y='500' width='61' height='100' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='453' y='497' width='64' height='103' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='525' y='537' width='67' height='63' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='600' y='473' width='68' height='127' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='676' y='552' width='27' height='48' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='711' y='487' width='61' height='113' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='780' y='545' width='53' height='55' rx='5' fill='rgba(0,0,0,0.16)'/><rect x='841' y='473' width='53' height='127' rx='5' fill='rgba(0,0,0,0.16)'/>
+<text x='60' y='300' font-family='Inter, Arial, sans-serif' font-size='40' font-weight='800' fill='rgba(255,255,255,0.96)'>Cozy apartment center Amsterdam</text>
+<text x='62' y='345' font-family='Inter, Arial, sans-serif' font-size='23' font-weight='500' fill='rgba(255,255,255,0.78)'>Espania, Madrid</text>
+</svg>

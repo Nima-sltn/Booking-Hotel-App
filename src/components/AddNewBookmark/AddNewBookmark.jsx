@@ -1,15 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import useUrlLocation from "../../hooks/useUrlLocation";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import Loader from "../Loader/Loader";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import ReactCountryFlag from "react-country-flag";
-import { useBookmark } from "../../context/BookmarkListContext";
+import { HiChevronLeft } from "react-icons/hi";
+import useUrlLocation from "../../hooks/useUrlLocation";
+import { useBookmark } from "../../context/BookmarkContext";
+import { reverseGeocode } from "../../services/geocodingService";
+import Loader from "../Loader/Loader";
 
-const BASE_GEOCODING_URL =
-  "https://api.bigdatacloud.net/data/reverse-geocode-client";
-
+/**
+ * Reverse-geocodes the map click (lat/lng in the URL) into city/country,
+ * lets the user correct it, then persists the bookmark.
+ */
 function AddNewBookmark() {
   const navigate = useNavigate();
   const [lat, lng] = useUrlLocation();
@@ -20,36 +22,37 @@ function AddNewBookmark() {
   const { createBookmark } = useBookmark();
 
   useEffect(() => {
-    if (!lat || !lng) return;
+    if (!lat || !lng) return undefined;
+    let cancelled = false;
 
     async function fetchLocationData() {
       setIsLoadingGeoCoding(true);
       try {
-        const { data } = await axios.get(
-          `${BASE_GEOCODING_URL}?latitude=${lat}&longitude=${lng}`
-        );
+        const place = await reverseGeocode(lat, lng);
+        if (cancelled) return;
 
-        if (!data.countryCode)
-          throw new Error(
-            "this location is not a city, please click somewhere else"
-          );
-
-        setCityName(data.city || data.locality || "");
-        setCountry(data.countryName);
-        setCountryCode(data.countryCode);
+        setCityName(place.cityName);
+        setCountry(place.country);
+        setCountryCode(place.countryCode);
       } catch (error) {
+        if (cancelled) return;
         toast.error(error.message, { style: { border: "1px solid red" } });
         setCountry("");
         setCityName("");
+        setCountryCode("");
       } finally {
-        setIsLoadingGeoCoding(false);
+        if (!cancelled) setIsLoadingGeoCoding(false);
       }
     }
+
     fetchLocationData();
+    return () => {
+      cancelled = true;
+    };
   }, [lat, lng]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (!cityName || !country) return;
 
     const newBookmark = {
@@ -58,56 +61,91 @@ function AddNewBookmark() {
       countryCode,
       latitude: lat,
       longitude: lng,
-      host_location: cityName + " " + country,
+      host_location: `${cityName} ${country}`,
     };
-    await createBookmark(newBookmark);
-    navigate("/bookmark");
+
+    const created = await createBookmark(newBookmark);
+    if (created) navigate("/bookmark");
   };
 
-  if (isLoadingGeoCoding) return <Loader />;
+  if (isLoadingGeoCoding) return <Loader label="Looking up location…" />;
 
   return (
-    <>
-      <h2>Add New Location</h2>
-      <form className="form" onSubmit={handleSubmit}>
-        <div className="formControl">
-          <label htmlFor="cityName">CityName</label>
-          <input
-            value={cityName}
-            onChange={(e) => {
-              setCityName(e.target.value);
-            }}
-            type="text"
-            name="cityName"
-            id="cityName"
-          />
-        </div>
-        <div className="formControl">
-          <label htmlFor="country">Country</label>
-          <input
-            value={country}
-            onChange={(e) => {
-              setCountry(e.target.value);
-            }}
-            type="text"
-            name="country"
-            id="country"
-          />
-          <ReactCountryFlag className="flag" svg countryCode={countryCode} />
-        </div>
-        <div className="buttons">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(-1);
-            }}
-            className="btn btn--back">
-            &larr; Back
-          </button>
-          <button className="btn btn--primary">Add</button>
-        </div>
-      </form>
-    </>
+    <div className="space-y-4">
+      <button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="back-link">
+        <HiChevronLeft className="h-4 w-4" aria-hidden="true" />
+        Back
+      </button>
+
+      <section className="panel p-5">
+        <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+          Add new bookmark
+        </h2>
+        <p className="mt-1 text-sm text-slate-400">
+          We looked up the spot you clicked — adjust it if needed.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+          <div>
+            <label htmlFor="cityName" className="form-label">
+              City
+            </label>
+            <input
+              value={cityName}
+              onChange={(e) => setCityName(e.target.value)}
+              type="text"
+              name="cityName"
+              id="cityName"
+              placeholder="e.g. Amsterdam"
+              className="form-input"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="country" className="form-label">
+              Country
+            </label>
+            <div className="relative">
+              <input
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                type="text"
+                name="country"
+                id="country"
+                placeholder="e.g. Netherlands"
+                className="form-input pr-12"
+              />
+              {countryCode && (
+                <ReactCountryFlag
+                  svg
+                  countryCode={countryCode}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded text-xl"
+                  aria-hidden="true"
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 pt-1">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="btn-ghost">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!cityName || !country}
+              className="btn-primary">
+              Add bookmark
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
   );
 }
 

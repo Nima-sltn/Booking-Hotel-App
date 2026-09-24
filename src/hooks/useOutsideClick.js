@@ -1,5 +1,14 @@
 import { useEffect } from "react";
 
+/**
+ * Run `cb` when a pointer-down lands outside `ref`,
+ * ignoring clicks on the element with id `exceptionId`
+ * (e.g. the toggle button that opens the dropdown).
+ *
+ * @param {import("react").RefObject<HTMLElement>} ref
+ * @param {string} exceptionId id of the toggle element
+ * @param {() => void} cb callback invoked on outside click
+ */
 export default function useOutsideClick(ref, exceptionId, cb) {
   useEffect(() => {
     function handleOutsideClick(event) {
@@ -15,5 +24,5 @@ export default function useOutsideClick(ref, exceptionId, cb) {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [ref, cb]);
+  }, [ref, exceptionId, cb]);
 }

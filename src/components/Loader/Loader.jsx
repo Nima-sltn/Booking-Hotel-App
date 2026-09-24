@@ -1,19 +1,26 @@
-import { LoaderIcon } from "react-hot-toast";
+import PropTypes from "prop-types";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-function Loader() {
+/**
+ * Centered spinner with an accessible status label.
+ * @param {{ label?: string }} props
+ */
+function Loader({ label = "Loading…" }) {
   return (
     <div
-      style={{
-        color: "var(--primary-600)",
-        display: "flex",
-        alignItems: "center",
-        gap: "1rem",
-        margin: "1rem auto",
-      }}>
-      <p> Loading Data...</p>
-      <LoaderIcon style={{ width: "1.3rem", height: "1.3rem" }} />
+      role="status"
+      className="flex items-center justify-center gap-2.5 px-4 py-10 text-slate-400">
+      <AiOutlineLoading3Quarters
+        className="h-5 w-5 animate-spin text-indigo-600 dark:text-indigo-400"
+        aria-hidden="true"
+      />
+      <span className="text-sm font-medium">{label}</span>
     </div>
   );
 }
+
+Loader.propTypes = {
+  label: PropTypes.string,
+};
 
 export default Loader;

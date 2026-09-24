@@ -1,50 +1,39 @@
-import "./App.css";
 import { Toaster } from "react-hot-toast";
 import Header from "./components/Header/Header";
-import LocationList from "./components/LocationList/LocationList";
-import { Routes, Route } from "react-router-dom";
-import AppLayout from "./components/AppLayout/AppLayout";
-import Hotels from "./components/Hotels/Hotels";
-import HotelsProvider from "./context/HotelsProvider";
-import SingleHotel from "./components/SingleHotel/SingleHotel";
-import BookmarkLayout from "./components/BookmarkLayout/BookmarkLayout";
-import BookmarkListProvider from "./context/BookmarkListContext";
-import Bookmark from "./components/Bookmark/Bookmark";
-import SingleBookmark from "./components/SingleBookmark/SingleBookmark";
-import AddNewBookmark from "./components/AddNewBookmark/AddNewBookmark";
+import AppRoutes from "./routes/AppRoutes";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import AuthProvider from "./context/AuthProvider";
-import Login from "./components/Login/Login";
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import BookmarkListProvider from "./context/BookmarkListContext";
+import HotelsProvider from "./context/HotelsProvider";
+import ThemeProvider from "./context/ThemeProvider";
+import CurrencyProvider from "./context/CurrencyProvider";
 
+/**
+ * App shell. Provider order (outermost first):
+ * theme -> auth -> bookmarks -> hotels -> currency -> UI.
+ */
 function App() {
   return (
-    <AuthProvider>
-      <BookmarkListProvider>
-        <HotelsProvider>
-          <Toaster />
-          <Header />
-          <Routes>
-            <Route path="/" element={<LocationList />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/hotels" element={<AppLayout />}>
-              <Route index element={<Hotels />} />
-              <Route path=":id" element={<SingleHotel />} />
-            </Route>
-            <Route
-              path="/bookmark"
-              element={
-                <ProtectedRoute>
-                  <BookmarkLayout />
-                </ProtectedRoute>
-              }>
-              <Route index element={<Bookmark />} />
-              <Route path=":id" element={<SingleBookmark />} />
-              <Route path="add" element={<AddNewBookmark />} />
-            </Route>
-          </Routes>
-        </HotelsProvider>
-      </BookmarkListProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BookmarkListProvider>
+          <HotelsProvider>
+            <CurrencyProvider>
+              <Toaster position="top-center" />
+
+              <div className="flex min-h-screen flex-col">
+                <ErrorBoundary>
+                  <Header />
+                  <main className="flex min-h-0 flex-1 flex-col">
+                    <AppRoutes />
+                  </main>
+                </ErrorBoundary>
+              </div>
+            </CurrencyProvider>
+          </HotelsProvider>
+        </BookmarkListProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
