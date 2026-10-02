@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 /* Class-based dark mode: the theme engine toggles `.dark` on <html>. */
+/* stylelint-disable-next-line at-rule-no-unknown -- Tailwind CSS v4 at-rule */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

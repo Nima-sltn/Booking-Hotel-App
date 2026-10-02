@@ -13,6 +13,8 @@ const SORT_OPTIONS = [
   { value: "rating-desc", label: "Top rated" },
 ];
 
+const SKELETON_IDS = [1, 2, 3, 4, 5];
+
 /**
  * Search results list (left panel beside the map) with sorting,
  * highlighted current hotel and an empty state.
@@ -51,7 +53,7 @@ function Hotels() {
         </h2>
 
         <label className="flex items-center gap-2 text-sm text-slate-400">
-          Sort
+          Sort{" "}
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
@@ -143,10 +145,10 @@ function Hotels() {
 
 function RowSkeletons() {
   return (
-    <div className="flex flex-col gap-3" role="status" aria-label="Loading results">
-      {Array.from({ length: 5 }).map((_, i) => (
+    <output className="flex flex-col gap-3" aria-label="Loading results">
+      {SKELETON_IDS.map((id) => (
         <div
-          key={i}
+          key={id}
           className="flex animate-pulse gap-4 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
           <div className="h-24 w-24 shrink-0 rounded-xl bg-slate-200 sm:h-28 sm:w-28 dark:bg-slate-800" />
           <div className="min-w-0 flex-1 space-y-2.5 py-1">
@@ -157,7 +159,7 @@ function RowSkeletons() {
           </div>
         </div>
       ))}
-    </div>
+    </output>
   );
 }
 
