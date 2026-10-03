@@ -7,6 +7,8 @@ import Price from "../Price/Price";
 import EmptyState from "../EmptyState/EmptyState";
 import { handleImageError } from "../../utils/imageFallback";
 
+const SKELETON_IDS = [1, 2, 3, 4, 5, 6, 7, 8];
+
 /**
  * Home page: hero + grid of every stay in the dataset.
  * Each card links to the hotel detail (list + map side by side).
@@ -61,9 +63,9 @@ function LocationList() {
           )}
         </div>
 
-        {isLoading ? (
-          <CardSkeletons />
-        ) : data.length === 0 ? (
+        {isLoading && <CardSkeletons />}
+
+        {!isLoading && data.length === 0 && (
           <EmptyState
             title="No stays found"
             hint="The local API returned no hotels. Is the json-server running?">
@@ -71,7 +73,9 @@ function LocationList() {
               Browse anyway
             </Link>
           </EmptyState>
-        ) : (
+        )}
+
+        {!isLoading && data.length > 0 && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.map((item) => {
               const rating = item.review_scores_rating
@@ -154,9 +158,9 @@ Stat.propTypes = {
 function CardSkeletons() {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, i) => (
+      {SKELETON_IDS.map((id) => (
         <div
-          key={i}
+          key={id}
           className="animate-pulse overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
           <div className="h-48 bg-slate-200 sm:h-52 dark:bg-slate-800" />
           <div className="space-y-2.5 p-4">

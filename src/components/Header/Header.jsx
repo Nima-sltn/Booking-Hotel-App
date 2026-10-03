@@ -84,8 +84,7 @@ function Header() {
               <HiLocationMarker className="h-5 w-5" />
             </span>
             <span className="hidden text-lg font-extrabold tracking-tight text-slate-900 dark:text-white sm:inline">
-              Stay
-              <span className="text-indigo-600 dark:text-indigo-400">
+              Stay<span className="text-indigo-600 dark:text-indigo-400">
                 Finder
               </span>
             </span>
