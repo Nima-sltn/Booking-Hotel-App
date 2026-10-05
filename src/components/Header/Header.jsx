@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import {
   HiCalendar,
@@ -10,10 +10,7 @@ import {
 } from "react-icons/hi";
 import useOutsideClick from "../../hooks/useOutsideClick";
 
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
-import { DateRange } from "react-date-range";
-import { format } from "date-fns";
+import { formatMonthDay } from "../../utils/time";
 
 import {
   NavLink,
@@ -25,6 +22,12 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import CurrencySwitcher from "../CurrencySwitcher/CurrencySwitcher";
+
+/**
+ * The calendar (react-date-range) is code-split: it only downloads when the
+ * user opens the date dropdown, keeping the header bundle small.
+ */
+const DateRangePicker = lazy(() => import("./DateRangePicker"));
 
 /**
  * App header: brand, navigation, search bar (destination / dates / guests),
@@ -152,22 +155,27 @@ function Header() {
               onClick={() => setOpenDate(!openDate)}
               type="button"
               className="whitespace-nowrap rounded-lg px-1 py-1 text-sm text-slate-600 transition hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400">
-              {`${format(date[0].startDate, "MMM d")} – ${format(
+              {`${formatMonthDay(date[0].startDate)} – ${formatMonthDay(
                 date[0].endDate,
-                "MMM d, yyyy",
+                { withYear: true },
               )}`}
             </button>
 
             {openDate && (
               <div className="absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
-                <DateRange
-                  onChange={(item) => setDate([item.selection])}
-                  ranges={date}
-                  minDate={new Date()}
-                  moveRangeOnFirstSelection
-                  dateDisplayFormat="MMM d, yyyy"
-                  rangeColors={["#4f46e5"]}
-                />
+                <Suspense
+                  fallback={
+                    <div
+                      role="status"
+                      aria-label="Loading calendar"
+                      className="m-3 h-[296px] w-[296px] animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800"
+                    />
+                  }>
+                  <DateRangePicker
+                    date={date}
+                    onChange={(item) => setDate([item.selection])}
+                  />
+                </Suspense>
               </div>
             )}
           </div>

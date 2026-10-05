@@ -13,6 +13,7 @@ export const CurrencyContext = createContext(undefined);
  *   setCurrency: (c: string) => void,
  *   currencies: string[],
  *   ratesStatus: "loading"|"ready"|"failed",
+ *   ratesUpdatedAt: number|null,
  *   convert: (amountEUR: number) => number,
  *   formatPrice: (amountEUR: number) => string,
  * }}

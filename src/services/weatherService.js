@@ -17,12 +17,16 @@ import {
   WiThunderstorm,
 } from "react-icons/wi";
 import { WEATHER_FORECAST_URL } from "../config/env";
+import createCachedRequest from "../lib/cache";
 
 /**
  * Weather service backed by Open-Meteo (free, keyless).
  * Cross-domain integration: geospatial coordinates -> meteorological data.
  * @module services/weatherService
  */
+
+/** Forecasts are reused for 5 minutes (detail page, round-up strip, StrictMode). */
+const FORECAST_TTL_MS = 5 * 60_000;
 
 const WMO_CODES = {
   0: { label: "Clear sky", Icon: WiDaySunny, nightIcon: WiNightClear },
@@ -72,9 +76,9 @@ export function getWeatherMeta(code, isNight = false) {
  * Fetch current conditions + a 4-day outlook for a coordinate.
  * @param {number|string} lat
  * @param {number|string} lon
- * @returns {Promise<{ current: object, daily: Array<object> }>}
+ * @returns {Promise<{ current: object, daily: Array<object>, timezone: string|null }>}
  */
-export async function getForecast(lat, lon) {
+async function fetchForecast(lat, lon) {
   const { data } = await axios.get(WEATHER_FORECAST_URL, {
     params: {
       latitude: lat,
@@ -102,5 +106,21 @@ export async function getForecast(lat, lon) {
     min: data.daily.temperature_2m_min[i],
   }));
 
-  return { current, daily };
+  // Open-Meteo also reports the coordinate's IANA time zone — reused by the
+  // destination clock and by any UI that needs "time where the stay is".
+  const timezone =
+    typeof data.timezone === "string" && data.timezone !== "auto"
+      ? data.timezone
+      : null;
+
+  return { current, daily, timezone };
 }
+
+/**
+ * Cached forecast lookup: identical coordinates share one request for
+ * `FORECAST_TTL_MS`, and concurrent callers share the in-flight promise.
+ * @type {(lat: number|string, lon: number|string) => Promise<{ current: object, daily: Array<object>, timezone: string|null }>}
+ */
+export const getForecast = createCachedRequest(fetchForecast, {
+  ttl: FORECAST_TTL_MS,
+});

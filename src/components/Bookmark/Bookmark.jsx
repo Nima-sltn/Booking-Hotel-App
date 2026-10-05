@@ -1,17 +1,24 @@
+import { useMemo } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { Link } from "react-router-dom";
 import { HiBookmark, HiTrash } from "react-icons/hi";
 import { useBookmark } from "../../context/BookmarkContext";
 import Loader from "../Loader/Loader";
 import EmptyState from "../EmptyState/EmptyState";
+import WeatherRoundup from "../WeatherRoundup/WeatherRoundup";
+import { formatKm, routeDistanceKm } from "../../utils/geo";
 
 /**
  * List of saved bookmarks (left panel beside the map).
  * Row navigation and delete are separate elements for valid HTML/a11y.
+ * Also summarises the trip: total route distance between the saved spots
+ * (great-circle math, no API) and a weather round-up across all of them.
  */
 function Bookmark() {
   const { isLoading, deleteBookmark, bookmarks, currentBookmark } =
     useBookmark();
+
+  const routeKm = useMemo(() => routeDistanceKm(bookmarks), [bookmarks]);
 
   const handleDelete = async (event, id) => {
     event.preventDefault();
@@ -26,11 +33,18 @@ function Bookmark() {
       <div className="flex items-center justify-between gap-3">
         <h2 className="page-title">Bookmarks</h2>
         {!isLoading && bookmarks.length > 0 && (
-          <span className="text-sm text-slate-400">
+          <span
+            className="text-sm text-slate-400"
+            title="Distance along the route formed by your saved destinations, in saved order">
             {bookmarks.length} saved
+            {routeKm > 0 && <> · {formatKm(routeKm)} route</>}
           </span>
         )}
       </div>
+
+      {!isLoading && bookmarks.length > 0 && (
+        <WeatherRoundup bookmarks={bookmarks} />
+      )}
 
       {bookmarks.length === 0 ? (
         <div className="mt-4">

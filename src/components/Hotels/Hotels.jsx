@@ -80,8 +80,7 @@ function Hotels() {
       ) : (
         <ul className="mt-4 flex flex-col gap-3">
           {sortedHotels.map((item) => {
-            const isActive =
-              String(item.id) === String(currentHotel?.id);
+            const isActive = String(item.id) === String(currentHotel?.id);
             const rating = item.review_scores_rating
               ? (item.review_scores_rating / 10).toFixed(1)
               : null;
@@ -110,10 +109,7 @@ function Hotels() {
                       </p>
                       {rating && (
                         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-bold text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">
-                          <HiStar
-                            className="h-3 w-3"
-                            aria-hidden="true"
-                          />
+                          <HiStar className="h-3 w-3" aria-hidden="true" />
                           {rating}
                         </span>
                       )}
