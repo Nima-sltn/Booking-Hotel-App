@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
 import { WiStrongWind } from "react-icons/wi";
+import { HiClock } from "react-icons/hi";
 import { getWeatherMeta, getForecast } from "../../services/weatherService";
+import useInterval from "../../hooks/useInterval";
+import { formatClockTime } from "../../utils/time";
 
 /**
  * Live weather card for a coordinate (Open-Meteo).
@@ -45,13 +48,18 @@ function WeatherWidget({ lat, lng, className = "" }) {
       className={`rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 ${className}`}
       aria-label="Local weather"
     >
-      <header className="mb-3 flex items-center justify-between">
+      <header className="mb-3 flex items-center justify-between gap-2">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
           Local weather
         </h3>
-        {status === "loading" && (
-          <span className="text-xs text-slate-400">Loading…</span>
-        )}
+        <div className="flex items-center gap-2">
+          {status === "loading" && (
+            <span className="text-xs text-slate-400">Loading…</span>
+          )}
+          {forecast?.timezone && (
+            <DestinationClock timeZone={forecast.timezone} />
+          )}
+        </div>
       </header>
 
       {status === "ready" && forecast && (
@@ -120,6 +128,35 @@ CurrentWeather.propTypes = {
     weatherCode: PropTypes.number.isRequired,
     isNight: PropTypes.bool,
   }).isRequired,
+};
+
+/**
+ * Live local time at the destination, ticking once per second.
+ * The zone comes from the forecast response (meteorology domain), the tick
+ * from a cleaned-up `setInterval`, and formatting from a memoized
+ * `Intl.DateTimeFormat` (see `utils/time.js`). Isolated in its own component
+ * so only this tiny line re-renders every second.
+ *
+ * @param {{ timeZone: string }} props
+ */
+function DestinationClock({ timeZone }) {
+  const [now, setNow] = useState(() => new Date());
+
+  useInterval(() => setNow(new Date()), 1000);
+
+  return (
+    <span
+      className="flex items-center gap-1 text-xs font-semibold tabular-nums text-slate-500 dark:text-slate-400"
+      title={`Local time in ${timeZone.replace(/_/g, " ")}`}
+      aria-label={`Local time in ${timeZone.replace(/_/g, " ")}`}>
+      <HiClock className="h-3.5 w-3.5" aria-hidden="true" />
+      {formatClockTime(now, timeZone)}
+    </span>
+  );
+}
+
+DestinationClock.propTypes = {
+  timeZone: PropTypes.string.isRequired,
 };
 
 WeatherWidget.propTypes = {

@@ -1,22 +1,26 @@
 import { HiGlobeAlt } from "react-icons/hi";
 import { useCurrency } from "../../context/CurrencyContext";
+import { formatShortTime } from "../../utils/time";
 
 /**
  * Currency switcher (EUR base -> USD/GBP/JPY/... via live rates).
  * Drives the `useCurrency` provider consumed by <Price /> everywhere.
  */
 function CurrencySwitcher() {
-  const { currency, setCurrency, currencies, ratesStatus } = useCurrency();
+  const { currency, setCurrency, currencies, ratesStatus, ratesUpdatedAt } =
+    useCurrency();
+
+  const title =
+    ratesStatus === "failed"
+      ? "Exchange rates unavailable — showing EUR"
+      : ratesUpdatedAt
+        ? `Display prices in — rates updated ${formatShortTime(ratesUpdatedAt)}`
+        : "Display prices in";
 
   return (
     <label
       className="relative flex cursor-pointer items-center"
-      title={
-        ratesStatus === "failed"
-          ? "Exchange rates unavailable — showing EUR"
-          : "Display prices in"
-      }
-    >
+      title={title}>
       <HiGlobeAlt className="pointer-events-none absolute left-2 h-4 w-4 text-slate-400" />
       <select
         aria-label="Display currency"
